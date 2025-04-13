@@ -12,7 +12,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {//checks if form was submitted
 
     if($stmt->execute())//inserts data, success shows a message, failure shows an error
     {
-        echo "SO YOU'RE IN BITCH, <a href='loginPage.html'>DON'T FUCK UP WHILE LOGGIN IN</a>";
+        echo "<a href='loginPage.html'>Login in here.</a>";
     }
     else
     {

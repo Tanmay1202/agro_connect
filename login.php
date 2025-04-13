@@ -1,5 +1,5 @@
 <?php
-
+session_start();//must be the first line before any ouput to initialize seesion
 include 'api/db_connect.php';
 
 if($_SERVER['REQUEST_METHOD'] == 'POST')
@@ -15,7 +15,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST')
 
     if($stored_password && $password === $stored_password)
     {
-        echo "Login successful! <a href='index.html'> Go to Home </a>";
+        $_SESSION['username'] = $username;//store username in session
+        echo "Login successful! <a href='index.html'>Go to dashboard</a> | <a href='logout.php'>Logout</a>";
     }
     else
     {
