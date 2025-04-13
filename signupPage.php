@@ -1,3 +1,43 @@
+<?php
+include 'api/db_connect.php';
+
+$stmt = null; // Initialize $stmt
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $username = trim($_POST['firstName'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $password = trim($_POST['password'] ?? '');
+    $confirmPassword = trim($_POST['confirmPassword'] ?? '');
+
+    if ($password !== $confirmPassword) {
+        $error_message = "Passwords do not match!";
+    } else {
+        $check_stmt = $conn->prepare("SELECT username FROM users WHERE username = ?");
+        $check_stmt->bind_param("s", $username);
+        $check_stmt->execute();
+        $check_stmt->store_result();
+
+        if ($check_stmt->num_rows > 0) {
+            $error_message = "Username already taken!";
+        } else {
+            $stmt = $conn->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
+            $stmt->bind_param("sss", $username, $email, $password);
+
+            if ($stmt->execute()) {
+                header("Location: loginPage.php");
+                exit();
+            } else {
+                $error_message = "ERROR: " . $conn->error;
+            }
+            if ($stmt) $stmt->close(); // Close only if prepared
+        }
+        if ($check_stmt) $check_stmt->close(); // Close check statement
+    }
+
+    $conn->close(); // Close connection
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,11 +67,11 @@
                     <span class="text-xl font-bold">AgroConnect</span>
                 </div>
                 <ul class="flex space-x-4">
-                    <li><a href="index.html" class="px-3 py-2 rounded-md hover:bg-green-700">Dashboard</a></li>
-                    <li><a href="guide.html" class="px-3 py-2 rounded-md hover:bg-green-700">Guide</a></li>
-                    <li><a href="about.html" class="px-3 py-2 rounded-md hover:bg-green-700">About</a></li>
-                    <li><a href="loginPage.html" class="px-3 py-2 rounded-md hover:bg-green-700">Login</a></li>
-                    <li><a href="signupPage.html" class="px-3 py-2 rounded-md bg-gradient-to-r from-green-700 to-green-800">Sign Up</a></li>
+                    <li><a href="index.php" class="px-3 py-2 rounded-md hover:bg-green-700">Dashboard</a></li>
+                    <li><a href="guide.php" class="px-3 py-2 rounded-md hover:bg-green-700">Guide</a></li>
+                    <li><a href="about.php" class="px-3 py-2 rounded-md hover:bg-green-700">About</a></li>
+                    <li><a href="loginPage.php" class="px-3 py-2 rounded-md hover:bg-green-700">Login</a></li>
+                    <li><a href="signupPage.php" class="px-3 py-2 rounded-md bg-gradient-to-r from-green-700 to-green-800">Sign Up</a></li>
                 </ul>
             </div>
         </div>
@@ -43,13 +83,13 @@
             <h1 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-700 to-blue-800 mb-6 text-center">
                 Create Account
             </h1>
-            <form class="space-y-6" action="signup.php" method="POST">
+            <form class="space-y-6" action="" method="POST">
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label for="firstName" class="block text-sm font-medium text-gray-700">Name</label>
                         <input type="text" 
                                id="firstName" 
-                               name="name" 
+                               name="firstName" 
                                required 
                                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                                placeholder="Name">
@@ -101,10 +141,11 @@
             <div class="mt-6 text-center">
                 <p class="text-sm text-gray-600">
                     Already have an account? 
-                    <a href="loginPage.html" class="font-medium text-green-600 hover:text-green-700">
+                    <a href="loginPage.php" class="font-medium text-green-600 hover:text-green-700">
                         Sign in here
                     </a>
                 </p>
+                <?php if (isset($error_message)) echo "<p class='text-red-600'>$error_message</p>"; ?>
             </div>
         </div>
     </main>

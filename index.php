@@ -1,3 +1,11 @@
+<?php
+session_start();
+if(!isset($_SESSION['username']))
+{
+    header("Location: loginPage.php");
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,11 +36,11 @@
                     <span class="text-xl font-bold">AgroConnect</span>
                 </div>
                 <ul class="flex space-x-4">
-                    <li><a href="index.html" class="px-3 py-2 rounded-md bg-gradient-to-r from-green-700 to-green-800 hover:from-green-800 hover:to-green-900">Dashboard</a></li>
-                    <li><a href="guide.html" class="px-3 py-2 rounded-md hover:bg-green-700">Pest Guide</a></li>
-                    <li><a href="about.html" class="px-3 py-2 rounded-md hover:bg-green-700">About</a></li>
-                    <li><a href="loginPage.html" class="px-3 py-2 rounded-md hover:bg-green-700">Login</a></li>
-                    <li><a href="signupPage.html" class="px-3 py-2 rounded-md hover:bg-green-700">Sign Up</a></li>
+                    <li><a href="index.php" class="px-3 py-2 rounded-md bg-gradient-to-r from-green-700 to-green-800 hover:from-green-800 hover:to-green-900">Dashboard</a></li>
+                    <li><a href="guide.php" class="px-3 py-2 rounded-md hover:bg-green-700">Pest Guide</a></li>
+                    <li><a href="about.php" class="px-3 py-2 rounded-md hover:bg-green-700">About</a></li>
+                    <li><a href="logout.php" class="px-3 py-2 rounded-md hover:bg-green-700">Logout</a></li>
+                    <li><a href="Profile.php" class="px-3 py-2 rounded-md hover:bg-green-700">Profile</a></li>
                 </ul>
             </div>
         </div>

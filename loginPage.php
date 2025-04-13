@@ -1,3 +1,37 @@
+<?php
+session_start();
+include 'api/db_connect.php';
+
+if($_SERVER['REQUEST_METHOD'] == 'POST')
+{
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    $stmt = $conn->prepare("SELECT password FROM users WHERE username = ?");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $stmt->bind_result($stored_password);
+    $stmt->fetch();
+
+    if($stored_password && $password === $stored_password)
+    {
+        $_SESSION['username'] = $username;//store username in session
+        header("Location: index.php");
+        exit();
+    }
+    else
+    {
+        $_SESSION['error message'] = "Invalid Credentials, retry or <a href='signupPage.html'>Sign Up</a>";
+        header("Location: loginPage.php");
+        exit();
+    }
+
+    $stmt->close();
+    $conn->close();
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,11 +61,11 @@
                     <span class="text-xl font-bold">AgroConnect</span>
                 </div>
                 <ul class="flex space-x-4">
-                    <li><a href="index.html" class="px-3 py-2 rounded-md hover:bg-green-700">Dashboard</a></li>
-                    <li><a href="guide.html" class="px-3 py-2 rounded-md hover:bg-green-700">Pest Guide</a></li>
-                    <li><a href="about.html" class="px-3 py-2 rounded-md hover:bg-green-700">About</a></li>
-                    <li><a href="loginPage.html" class="px-3 py-2 rounded-md bg-gradient-to-r from-green-700 to-green-800">Login</a></li>
-                    <li><a href="signupPage.html" class="px-3 py-2 rounded-md hover:bg-green-700">Sign Up</a></li>
+                    <li><a href="index.php" class="px-3 py-2 rounded-md hover:bg-green-700">Dashboard</a></li>
+                    <li><a href="guide.php" class="px-3 py-2 rounded-md hover:bg-green-700">Pest Guide</a></li>
+                    <li><a href="about.php" class="px-3 py-2 rounded-md hover:bg-green-700">About</a></li>
+                    <li><a href="loginPage.php" class="px-3 py-2 rounded-md bg-gradient-to-r from-green-700 to-green-800">Login</a></li>
+                    <li><a href="signupPage.php" class="px-3 py-2 rounded-md hover:bg-green-700">Sign Up</a></li>
                 </ul>
             </div>
         </div>
@@ -43,7 +77,7 @@
             <h1 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-700 to-blue-800 mb-6 text-center">
                 Welcome Back
             </h1>
-            <form class="space-y-6" action="login.php" method="POST">
+            <form class="space-y-6" action="" method="POST">
                 <div>
                     <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
                     <input type="text" 
@@ -85,9 +119,19 @@
                     </a>
                 </div>
                 <div>
+                    <?php
+                        // session_start();//must be the first line before any ouput to initialize seesion
+                        if(isset($_SESSION['error message']))
+                        {
+                            echo $_SESSION['error message'];
+                            unset($_SESSION['error message']);
+                        }
+                    ?>
+                </div>
+                <div>
                     <button type="submit" 
                             class="w-full py-2 px-4 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-md hover:from-green-700 hover:to-green-800 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors duration-300">
-                        Sign In
+                        Log In
                     </button>
                 </div>
             </form>
@@ -103,3 +147,5 @@
     </main>
 </body>
 </html>
+
+
