@@ -21,7 +21,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST')
     }
     else
     {
-        $_SESSION['error message'] = "Invalid Credentials, retry or <a href='signupPage.html'>Sign Up</a>";
+        $_SESSION['error message'] = "Invalid Credentials, retry or <a href='signupPage.php'>Sign Up</a>";
         header("Location: loginPage.php");
         exit();
     }
@@ -88,7 +88,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST')
                            placeholder="Enter your username">
                 </div>
                 <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700">email</label>
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
                     <input type="email" 
                            id="email" 
                            name="email" 
